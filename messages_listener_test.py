@@ -4,15 +4,16 @@ from rvb.models import *
 from rvb.controls import *
 import json
 
+host = "http://127.0.0.1:5000/"
+host = "http://10.88.111.49:8000/"
+
 def test_get_listener(player, listener):
-    host = "http://127.0.0.1:5000/"
     print("Can {player_name} get the listener?".format(player_name = player.name))
     params = {'api_key': player.api_key}
     response = requests.get(host + "listener/" + str(listener.id), params)
     print(response.text)
 
 def test_post_listener(player, listener, channel):
-    host = "http://127.0.0.1:5000/"
     if channel == "wrong_channel_id":
         print("Post to non existant channel as {player_name}".format(player_name=player.name))
         data = json.dumps({'channel_id': 9999999})
@@ -29,7 +30,6 @@ def test_post_listener(player, listener, channel):
     print(response.text)
 
 def test_post_message(player,channel,content):
-    host = "http://127.0.0.1:5000/"
     print("Can {player_name} post the message to channel {channel_id}?".format(player_name = player.name, channel_id = channel.id))
     params = {'api_key': player.api_key}
     data = json.dumps({'content': content, 'channel_id': channel.id})
@@ -37,7 +37,6 @@ def test_post_message(player,channel,content):
     print(response.text)
 
 def test_get_message(player, channel):
-    host = "http://127.0.0.1:5000/"
     print("Can {player_name} get the message from channel {channel_id}?".format(player_name = player.name, channel_id = channel.id))
     params = {'api_key': player.api_key, 'channel_id': channel.id}
     response = requests.get(host + "messages", params)
