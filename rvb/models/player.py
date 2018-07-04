@@ -3,12 +3,14 @@ from rvb.models import *
 from datetime import datetime
 import random
 from sqlalchemy import func
+from rvb.exceptions import Unauthenticated
 
 class Player(db.Model):
     __tablename__ = 'players'
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False, unique=True)
+    agents = db.relationship('Agent', back_populates='player')
     description = db.Column(db.Text)
     api_key = db.Column(db.String)
     ip_address = db.Column(db.String)
@@ -37,8 +39,17 @@ class Player(db.Model):
             db.session.commit()
             return player
 
-    def generate_api_key(self):
-        self.api_key = '%030x' % random.randrange(16**30)
 
     def current_user(api_key):
         return Player.query.filter(Player.api_key == api_key).first()
+
+    def generate_api_key(self):
+        self.api_key = '%030x' % random.randrange(16**30)
+
+    def serialize_agents(self,requestor):
+        if (requestor == 'Alpha' or requestor == 'Charlie') and self.name == 'Alpha':
+            return [agent.serialize(requestor) for agent in self.agents if requestor == 'Alpha' or (not agent.in_safehouse() and requestor == 'Charlie')]
+        elif (requestor == 'Charlie' or requestor == 'Bravo') and self.name == 'Charlie':
+            return [agent.serialize(requestor) for agent in self.agents]
+        else:
+            raise Unauthenticated("You are not permitted to access this resource!", 401)

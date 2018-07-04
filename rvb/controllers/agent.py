@@ -4,32 +4,58 @@ from flask import Flask, request, json
 from rvb.controllers.helpers import authenticate, parse_data, validate_data
 from rvb.exceptions import ResourceMissing, InvalidUsage
 
-@application.route('/agent/<listener_id>', methods=['GET','POST'])
-def listener(listener_id):
+@application.route('/agent/<agent_id>', methods=['GET','POST'])
+def agent(agent_id):
     if request.method == 'POST':
-        player = authenticate(request,['Charlie'])
+        player = authenticate(request,['Charlie','Alpha'])
+        if agent_id == None:
+            raise InvalidUsage("You must specify an agent!", 420)
         data = parse_data(request)
-        validate_data(data,['channel_id'])
-        listener = Listener.find(int(listener_id))
-        if listener:
-            listener.listen_to(data['channel_id'])
-            return "Listener {listener_id} is now listening to channel {channel_id}".format(
-                listener_id = listener_id,
-                channel_id = data['channel_id']
-                )
+        validate_data(data,['x','y'])
+        agent = Agent.find(int(agent_id))
+        if agent:
+            agent.move(int(data['x']),int(data['y']))
+            return "Agent moved to {x},{y}".format(x=data['x'],y=data['y'])
         else:
-            raise ResourceMissing("No listener found with id %r" % listener_id,404)
+            raise ResourceMissing("No agent found with id %r" % agent_id, 404)
 
     elif request.method == 'GET':
-        player = authenticate(request,['Charlie'])
-        listener = Listener.find(int(listener_id))
+        player = authenticate(request,['Alpha','Bravo','Charlie'])
 
-        if listener:
-            return json.jsonify(
-                id=listener.id,
-                channel_id=listener.channel_id,
-                intercepted_messages=len(listener.messages),
-                messages = listener.serialize_messages()
-                )
+        if agent_id:
+            agent = Agent.find(agent_id)
+
+            if agent:
+                if player.name == 'Alpha' and agent.player.name == 'Alpha':
+                    return json.jsonify(
+                        id=agent.id,
+                        x=agent.x,
+                        y=agent.y,
+                        safehouse=agent.safehouse_id,
+                        packages=len(agent.packages)
+                        )
+                elif (player.name == 'Charlie' or player.name == 'Bravo') and agent.player.name == 'Charlie':
+                    return json.jsonify(
+                        id=agent.id,
+                        x=agent.x,
+                        y=agent.y
+                        )
+                elif player.name == 'Charlie' and not agent.in_safehouse() and agent.player.name == 'Alpha':
+                    return json.jsonify(
+                        id=agent.id,
+                        x=agent.x,
+                        y=agent.y,
+                        packages=len(agent.packages),
+                        )
+            else:
+                raise ResourceMissing("No Agent found with id %r" % agent_id,404)
+
         else:
-            raise ResourceMissing("No listener found with id %r" % listener_id,404)
+            if player.name == 'Alpha':
+                return player.serialize_agents(player.name)
+            elif player.name == 'Charlie':
+                alpha = Player.query.filter(Player.name == 'Alpha').first()
+                return player.serialize_agents.extend(alpha.serialize_agents('Charlie'))
+            elif player.name == 'Bravo':
+                charlie = Player.query.filter(Player.name == 'Charlie').first()
+                return charlie.serialize_agents('Bravo')

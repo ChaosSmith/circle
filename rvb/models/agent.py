@@ -48,6 +48,14 @@ class Agent(db.Model):
         moves = [(self.x+1,self.y),(self.x-1,self.y),(self.x, self.y+1),(self.x,self.y-1)]
         return [move for move in moves if move[0] > -1 and move[0] < 100 and move[1] > -1 and move[1] < 100]
 
+    def serialize(self, requestor):
+        if requestor == 'Alpha' and self.player.name == 'Alpha':
+            return {'id': self.id, 'x': self.x, 'y': self.y, 'safehouse': self.in_safehouse(), 'packages': len(self.packages)}
+        elif requestor == 'Charlie' and (self.player.name == 'Alpha' or self.player.name == 'Charlie)':
+            return {'id': self.id, 'x': self.x, 'y': self.y}
+        elif requestor == 'Bravo' and (self.player.name == 'Charlie'):
+            return {'id': self.id, 'x': self.x, 'y': self.y}
+
     def leave_safehouse(self):
         self.safehouse_id = None
         db.session.commit()
