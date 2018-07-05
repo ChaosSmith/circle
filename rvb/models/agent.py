@@ -1,10 +1,11 @@
 from rvb import db
-from rvb.models import *
 from datetime import datetime
 from sqlalchemy import func
 from flask import json
 from rvb.exceptions import ResourceMissing, IsDead, IllegalMove
-
+from rvb.models import *
+from rvb.models.safehouse import Safehouse
+from rvb.models.package import Package
 class Agent(db.Model):
     __tablename__ = 'agents'
 
@@ -16,7 +17,7 @@ class Agent(db.Model):
     packages = db.relationship('Package', back_populates='agent')
     x = db.Column(db.Integer,nullable=False, index=True)
     y = db.Column(db.Integer,nullable=False, index=True)
-    alive = db.Column(db.Boolean,server_default=True, nullable=False)
+    alive = db.Column(db.Boolean, server_default='t', nullable=False)
     created_at =db.Column(db.TIMESTAMP, server_default=func.now())
     updated_at =db.Column(db.TIMESTAMP, server_default=func.now(),onupdate=func.current_timestamp())
 
@@ -37,11 +38,11 @@ class Agent(db.Model):
         return len(self.packages) > 0
 
     def in_safehouse(self):
-        return not safehouse_id == None
+        return not self.safehouse_id == None
 
     def kill(self):
         self.alive = False
-        [package.drop(self.x,self.y) for package in self.packages]
+        [package.drop() for package in self.packages]
         db.session.commit()
 
     def legal_moves(self):
@@ -51,7 +52,7 @@ class Agent(db.Model):
     def serialize(self, requestor):
         if requestor == 'Alpha' and self.player.name == 'Alpha':
             return {'id': self.id, 'x': self.x, 'y': self.y, 'safehouse': self.in_safehouse(), 'packages': len(self.packages)}
-        elif requestor == 'Charlie' and (self.player.name == 'Alpha' or self.player.name == 'Charlie)':
+        elif requestor == 'Charlie' and (self.player.name == 'Alpha' or self.player.name == 'Charlie'):
             return {'id': self.id, 'x': self.x, 'y': self.y}
         elif requestor == 'Bravo' and (self.player.name == 'Charlie'):
             return {'id': self.id, 'x': self.x, 'y': self.y}
@@ -71,8 +72,8 @@ class Agent(db.Model):
             raise IllegalMove(
                 "Agent {agent_id} can't move to {x},{y}, only to [{legal_moves}]".format(
                     agent_id=self.id,
-                    x=self.x,
-                    y=self.y,
+                    x=x,
+                    y=y,
                     legal_moves=",".join([str(move) for move in self.legal_moves()])
                     ),
                 404
@@ -89,24 +90,24 @@ class Agent(db.Model):
 
         # Quite a few things need to happen and we need to get the priority right
         #First is there any agents already here?
-        other_agents = Agent.query.filter(Agent.x == self.x and Agent.y == self.y and Agent.id != self.id).all()
+        other_agents = Agent.query.filter(Agent.x == self.x and Agent.y == self.y and Agent.id != self.id and Agent.alive == True).all()
 
         for agent in other_agents:
             if agent.player.name == "Charlie" and (self.player.name == "Bravo" or self.player.name == "Alpha"):
                 self.kill()
                 raise IsDead("Agent {agent_id} is dead".format(agent_id=self.id),404)
-            elif self.player.name == "Charlie" and not agent.in_safehouse() (agent.player.name == "Bravo" or agent.player.name == "Alpha"):
+            elif self.player.name == "Charlie" and not agent.in_safehouse() and (agent.player.name == "Bravo" or agent.player.name == "Alpha"):
                 agent.kill()
 
         if self.player.name == "Charlie":
-            # Charlie does not care about this
+            # Charlie does not care about packages or safehouses
             return True
 
-        packages = Package.query.filter(Package.x == self.x and Package.y == self.y and Package.agent_id == None).all()
+        packages = Package.query.filter(Package.x == self.x and Package.y == self.y and Package.agent_id == None and Package.safehouse_id == None).all()
         [package.pickup(self) for package in packages]
         [package.move(self.x,self.y) for package in self.packages]
 
-        safehouse = Safehouse.query.filter(Safehouse.x == self.x and Safehouse.y == self.y)
+        safehouse = Safehouse.query.filter(Safehouse.x == self.x and Safehouse.y == self.y).first()
 
         if safehouse:
             self.enter_safehouse(safehouse)

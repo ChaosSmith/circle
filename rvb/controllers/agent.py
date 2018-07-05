@@ -2,10 +2,11 @@ from rvb import application
 from rvb.models import *
 from flask import Flask, request, json
 from rvb.controllers.helpers import authenticate, parse_data, validate_data
-from rvb.exceptions import ResourceMissing, InvalidUsage
+from rvb.exceptions import ResourceMissing, InvalidUsage, Unauthenticated
 
-@application.route('/agent/<agent_id>', methods=['GET','POST'])
-def agent(agent_id):
+@application.route('/agent', methods=['GET','POST'])
+def agent():
+    agent_id = request.args.get('agent_id')
     if request.method == 'POST':
         player = authenticate(request,['Charlie','Alpha'])
         if agent_id == None:
@@ -15,7 +16,19 @@ def agent(agent_id):
         agent = Agent.find(int(agent_id))
         if agent:
             agent.move(int(data['x']),int(data['y']))
-            return "Agent moved to {x},{y}".format(x=data['x'],y=data['y'])
+            if player.name == 'Alpha':
+                return json.jsonify(
+                    x=agent.x,
+                    y=agent.y,
+                    alive=agent.alive,
+                    safehouse=agent.safehouse_id,
+                    packages=len(agent.packages)
+                )
+            elif player.name == 'Charlie':
+                return json.jsonify(
+                    x=agent.x,
+                    y=agent.y
+                )
         else:
             raise ResourceMissing("No agent found with id %r" % agent_id, 404)
 
@@ -31,6 +44,7 @@ def agent(agent_id):
                         id=agent.id,
                         x=agent.x,
                         y=agent.y,
+                        alive=agent.alive,
                         safehouse=agent.safehouse_id,
                         packages=len(agent.packages)
                         )
@@ -47,15 +61,19 @@ def agent(agent_id):
                         y=agent.y,
                         packages=len(agent.packages),
                         )
+                else:
+                    raise Unauthenticated('Access Denied', status_code=401)
             else:
                 raise ResourceMissing("No Agent found with id %r" % agent_id,404)
 
         else:
             if player.name == 'Alpha':
-                return player.serialize_agents(player.name)
+                return json.jsonify(agents=player.serialize_agents(player.name))
             elif player.name == 'Charlie':
                 alpha = Player.query.filter(Player.name == 'Alpha').first()
-                return player.serialize_agents.extend(alpha.serialize_agents('Charlie'))
+                agents = player.serialize_agents('Charlie')
+                agents.extend(alpha.serialize_agents('Charlie'))
+                return json.jsonify(agents=agents)
             elif player.name == 'Bravo':
                 charlie = Player.query.filter(Player.name == 'Charlie').first()
-                return charlie.serialize_agents('Bravo')
+                return json.jsonify(agents=charlie.serialize_agents('Bravo'))

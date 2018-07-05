@@ -11,7 +11,7 @@ class Package(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     agent = db.relationship('Agent', back_populates='packages')
     agent_id = db.Column(db.Integer, db.ForeignKey('agents.id'), index=True)
-    safehouse = db.relationship('Safehouse', back_populates='agents')
+    safehouse = db.relationship('Safehouse', back_populates='packages')
     safehouse_id = db.Column(db.Integer, db.ForeignKey('safehouses.id'), index=True)
     x = db.Column(db.Integer,nullable=False, index=True)
     y = db.Column(db.Integer,nullable=False, index=True)
@@ -25,6 +25,9 @@ class Package(db.Model):
         # Find instance by id
         return Package.query.filter(Package.id == instance_id).first()
 
+    def all():
+        return Package.query.all()
+
     def create(position):
         new_package = Package(x=position[0],y=position[1])
         db.session.add(new_package)
@@ -32,7 +35,7 @@ class Package(db.Model):
         return new_package
 
     def in_safehouse(self):
-        return not safehouse_id == None
+        return not self.safehouse_id == None
 
     def pickup(self, agent):
         self.agent = agent
@@ -48,6 +51,18 @@ class Package(db.Model):
         db.session.commit()
 
     def move(self,x,y):
+        if x == self.x and y == self.y:
+            # We are already here, don't waste db cycle
+            return
         self.x = x
         self.y = y
         db.session.commit()
+
+    def serialize(self):
+        return {
+            'id': self.id,
+            'x': self.x,
+            'y': self.y,
+            'agent_id': self.agent_id,
+            'in_safehouse': self.in_safehouse()
+            }

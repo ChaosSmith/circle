@@ -13,12 +13,12 @@ class Safehouse(db.Model):
     packages = db.relationship('Package', back_populates='safehouse')
     x = db.Column(db.Integer,nullable=False, index=True)
     y = db.Column(db.Integer,nullable=False, index=True)
-    dropoff = db.Column(db.Boolean,server_default=False, nullable=False)
-    created_at =db.Column(db.TIMESTAMP, server_default=func.now())
-    updated_at =db.Column(db.TIMESTAMP, server_default=func.now(),onupdate=func.current_timestamp())
+    dropoff = db.Column(db.Boolean, server_default='t', nullable=False)
+    created_at = db.Column(db.TIMESTAMP, server_default=func.now())
+    updated_at = db.Column(db.TIMESTAMP, server_default=func.now(),onupdate=func.current_timestamp())
 
     def __repr__(self):
-        return '<Agent %r>' % self.id
+        return '<Safehouse %r>' % self.id
 
     def find(instance_id):
         # Find instance by id
@@ -30,5 +30,17 @@ class Safehouse(db.Model):
         db.session.commit()
         return new_safehouse
 
+    def all():
+        return Safehouse.query.all()
+
     def has_packages(self):
         return len(self.packages) > 0
+
+    def serialize(self):
+        return {
+            'id': self.id,
+            'x': self.x,
+            'y': self.y,
+            'dropoff': self.dropoff,
+            'packages': len(self.packages)
+            }
