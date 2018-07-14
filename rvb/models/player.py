@@ -3,7 +3,7 @@ from rvb.models import *
 from datetime import datetime
 import random
 from sqlalchemy import func
-from rvb.exceptions import Unauthenticated
+from rvb.exceptions import ApiError
 
 class Player(db.Model):
     __tablename__ = 'players'
@@ -53,4 +53,4 @@ class Player(db.Model):
         elif (requestor == 'Charlie' or requestor == 'Bravo') and self.name == 'Charlie':
             return [agent.serialize(requestor) for agent in self.agents]
         else:
-            raise Unauthenticated("You are not permitted to access this resource!", 401)
+            raise ApiError("You are not permitted to access this resource!", 401)

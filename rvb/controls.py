@@ -2,6 +2,8 @@ from rvb import db
 from rvb.models import *
 from rvb.db import connect, drop, create, DATABASE
 
+charlie = Player.query.filter(Player.name== 'Charlie')
+
 def new_game():
     clear_rows()
 

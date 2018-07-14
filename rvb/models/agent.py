@@ -2,7 +2,7 @@ from rvb import db
 from datetime import datetime
 from sqlalchemy import func
 from flask import json
-from rvb.exceptions import ResourceMissing, IsDead, IllegalMove
+from rvb.exceptions import ApiError
 from rvb.models import *
 from rvb.models.safehouse import Safehouse
 from rvb.models.package import Package
@@ -51,11 +51,11 @@ class Agent(db.Model):
 
     def serialize(self, requestor):
         if requestor == 'Alpha' and self.player.name == 'Alpha':
-            return {'id': self.id, 'x': self.x, 'y': self.y, 'safehouse': self.in_safehouse(), 'packages': len(self.packages)}
+            return {'id': self.id, 'alive': self.alive, 'owner': self.player.name, 'x': self.x, 'y': self.y, 'safehouse': self.in_safehouse(), 'packages': len(self.packages)}
         elif requestor == 'Charlie' and (self.player.name == 'Alpha' or self.player.name == 'Charlie'):
-            return {'id': self.id, 'x': self.x, 'y': self.y}
+            return {'id': self.id, 'alive': self.alive, 'owner': self.player.name, 'x': self.x, 'y': self.y}
         elif requestor == 'Bravo' and (self.player.name == 'Charlie'):
-            return {'id': self.id, 'x': self.x, 'y': self.y}
+            return {'id': self.id, 'alive': self.alive, 'owner': self.player.name, 'x': self.x, 'y': self.y}
 
     def leave_safehouse(self):
         self.safehouse_id = None
@@ -67,9 +67,9 @@ class Agent(db.Model):
 
     def move(self,x,y):
         if not self.alive:
-            raise IsDead("Agent {agent_id} is dead".format(agent_id=self.id),404)
+            raise ApiError("Agent {agent_id} is dead".format(agent_id=self.id),404)
         if (x,y) not in self.legal_moves():
-            raise IllegalMove(
+            raise ApiError(
                 "Agent {agent_id} can't move to {x},{y}, only to [{legal_moves}]".format(
                     agent_id=self.id,
                     x=x,
@@ -95,7 +95,7 @@ class Agent(db.Model):
         for agent in other_agents:
             if agent.player.name == "Charlie" and (self.player.name == "Bravo" or self.player.name == "Alpha"):
                 self.kill()
-                raise IsDead("Agent {agent_id} is dead".format(agent_id=self.id),404)
+                raise ApiError("Agent {agent_id} is dead".format(agent_id=self.id),404)
             elif self.player.name == "Charlie" and not agent.in_safehouse() and (agent.player.name == "Bravo" or agent.player.name == "Alpha"):
                 agent.kill()
 

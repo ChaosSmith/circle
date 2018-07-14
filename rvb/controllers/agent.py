@@ -2,7 +2,7 @@ from rvb import application
 from rvb.models import *
 from flask import Flask, request, json
 from rvb.controllers.helpers import authenticate, parse_data, validate_data
-from rvb.exceptions import ResourceMissing, InvalidUsage, Unauthenticated
+from rvb.exceptions import ApiError
 
 @application.route('/agent', methods=['GET','POST'])
 def agent():
@@ -10,10 +10,12 @@ def agent():
     if request.method == 'POST':
         player = authenticate(request,['Charlie','Alpha'])
         if agent_id == None:
-            raise InvalidUsage("You must specify an agent!", 420)
+            raise ApiError("You must specify an agent!", 420)
         data = parse_data(request)
         validate_data(data,['x','y'])
         agent = Agent.find(int(agent_id))
+        if agent.player != player:
+            raise ApiError("You can't move someone elses agent!", 401)
         if agent:
             agent.move(int(data['x']),int(data['y']))
             if player.name == 'Alpha':
@@ -30,7 +32,7 @@ def agent():
                     y=agent.y
                 )
         else:
-            raise ResourceMissing("No agent found with id %r" % agent_id, 404)
+            raise ApiError("No agent found with id %r" % agent_id, 404)
 
     elif request.method == 'GET':
         player = authenticate(request,['Alpha','Bravo','Charlie'])
@@ -62,9 +64,9 @@ def agent():
                         packages=len(agent.packages),
                         )
                 else:
-                    raise Unauthenticated('Access Denied', status_code=401)
+                    raise ApiError('Access Denied', status_code=401)
             else:
-                raise ResourceMissing("No Agent found with id %r" % agent_id,404)
+                raise ApiError("No Agent found with id %r" % agent_id,404)
 
         else:
             if player.name == 'Alpha':

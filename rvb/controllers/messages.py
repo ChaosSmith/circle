@@ -2,6 +2,7 @@ from rvb import application
 from rvb.models import *
 from flask import Flask, request, json
 from rvb.controllers.helpers import authenticate, parse_data, validate_data
+from rvb.controllers.exceptions import ApiError
 
 @application.route('/messages', methods=['GET', 'POST'])
 def messages():

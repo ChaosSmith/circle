@@ -2,7 +2,7 @@ from rvb import application
 from rvb.models import *
 from flask import Flask, request, json
 from rvb.controllers.helpers import authenticate, parse_data, validate_data
-from rvb.exceptions import ResourceMissing, InvalidUsage
+from rvb.exceptions import ApiError
 
 @application.route('/listener/<listener_id>', methods=['GET','POST'])
 def listener(listener_id):
@@ -18,7 +18,7 @@ def listener(listener_id):
                 channel_id = data['channel_id']
                 )
         else:
-            raise ResourceMissing("No listener found with id %r" % listener_id,404)
+            raise ApiError("No listener found with id %r" % listener_id,404)
 
     elif request.method == 'GET':
         player = authenticate(request,['Charlie'])
@@ -32,4 +32,4 @@ def listener(listener_id):
                 messages = listener.serialize_messages()
                 )
         else:
-            raise ResourceMissing("No listener found with id %r" % listener_id,404)
+            raise ApiError("No listener found with id %r" % listener_id,404)

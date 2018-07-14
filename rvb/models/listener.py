@@ -3,7 +3,7 @@ from rvb.models import *
 from datetime import datetime
 from sqlalchemy import func
 from flask import json
-from rvb.exceptions import ResourceMissing
+from rvb.exceptions import ApiError
 
 class Listener(db.Model):
     __tablename__ = 'listeners'
@@ -36,7 +36,7 @@ class Listener(db.Model):
             db.session.commit()
             return True
         else:
-            raise ResourceMissing("No channel found with id %r" % channel_id,404)
+            raise ApiError("No channel found with id %r" % channel_id,404)
 
     def serialize_messages(self):
         return [message.serialize() for message in self.messages]

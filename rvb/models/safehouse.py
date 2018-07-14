@@ -3,7 +3,7 @@ from rvb.models import *
 from datetime import datetime
 from sqlalchemy import func
 from flask import json
-from rvb.exceptions import ResourceMissing, IsDead, IllegalMove
+from rvb.exceptions import ApiError
 
 class Safehouse(db.Model):
     __tablename__ = 'safehouses'

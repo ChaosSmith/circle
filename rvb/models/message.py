@@ -3,7 +3,7 @@ from rvb.models import *
 from datetime import datetime
 from sqlalchemy import func
 from sqlalchemy.exc import *
-from rvb.exceptions import ResourceMissing
+from rvb.exceptions import ApiError
 import random
 import math
 
@@ -32,7 +32,7 @@ class Message(db.Model):
             db.session.commit()
         except IntegrityError as e:
             print(str(e))
-            raise ResourceMissing("Could not find channel {channel_id}, message was not delivered".format(channel_id=channel_id), 404)
+            raise ApiError("Could not find channel {channel_id}, message was not delivered".format(channel_id=channel_id), 404)
 
         if message.channel.has_listeners():
             # Assuming there is only one listener

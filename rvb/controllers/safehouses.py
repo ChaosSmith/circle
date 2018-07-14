@@ -2,7 +2,7 @@ from rvb import application
 from rvb.models import *
 from flask import Flask, request, json
 from rvb.controllers.helpers import authenticate, parse_data, validate_data
-from rvb.exceptions import ResourceMissing, InvalidUsage, Unauthenticated
+from rvb.exceptions import ApiError
 
 @application.route('/safehouses', methods=['GET'])
 def safehouses():

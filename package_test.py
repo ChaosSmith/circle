@@ -5,7 +5,7 @@ from rvb.controls import *
 import json
 
 host = "http://127.0.0.1:5000/"
-host = "http://10.88.111.49:8000/"
+host = "-"
 
 def test_get_agent(player, agent):
     if agent:

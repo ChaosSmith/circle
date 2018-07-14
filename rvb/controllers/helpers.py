@@ -1,6 +1,6 @@
 from rvb.models import *
 from flask import request, json
-from rvb.exceptions import Unauthenticated, InvalidUsage
+from rvb.exceptions import ApiError
 
 def authenticate(request, expect):
     api_key = request.args.get('api_key')
@@ -8,7 +8,7 @@ def authenticate(request, expect):
     if player and player.name in expect:
         return player
     else:
-        raise Unauthenticated('Access Denied', status_code=401)
+        raise ApiError('Access Denied', status_code=401)
 
 def parse_data(request):
     data = request.get_data().decode('utf8')
@@ -19,4 +19,4 @@ def validate_data(data,expected_keys):
     if len(missing_keys) == 0:
         return True
     else:
-        raise InvalidUsage("Improper request, missing -> [{keys}]".format(keys=",".join(missing_keys)),400)
+        raise ApiError("Improper request, missing -> [{keys}]".format(keys=",".join(missing_keys)),400)
