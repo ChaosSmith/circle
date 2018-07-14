@@ -2,7 +2,7 @@ from rvb import db
 from rvb.models import *
 from rvb.db import connect, drop, create, DATABASE
 
-charlie = Player.query.filter(Player.name== 'Charlie')
+charlie = Player.query.filter(Player.name== 'Charlie').first()
 
 def new_game():
     clear_rows()
@@ -35,6 +35,7 @@ def new_game():
     Listener.create() #1
 
     agent = Agent.create(alpha,(0,0))
+
     package = Package.create((1,0))
     safehouse  = Safehouse.create((10,0),True)
 

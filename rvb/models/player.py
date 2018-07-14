@@ -14,6 +14,8 @@ class Player(db.Model):
     description = db.Column(db.Text)
     api_key = db.Column(db.String)
     ip_address = db.Column(db.String)
+    team = db.Column(db.String)
+    permissions = db.Column(db.JSON, server_default='[]', nullable=False)
     created_at = db.Column(db.TIMESTAMP, server_default=func.now())
     updated_at = db.Column(db.TIMESTAMP, server_default=func.now(),onupdate=func.current_timestamp())
 
@@ -34,12 +36,11 @@ class Player(db.Model):
         else:
             players = Player.query.filter(Player.ip_address == None).all()
             if len(players) == 0:
-                raise FullGame("Sorry this game is already full", 423)
+                raise ApiError("Sorry this game is already full", 423)
             player = random.choice(players)
             player.ip_address = ip_address
             db.session.commit()
             return player
-
 
     def current_user(api_key):
         return Player.query.filter(Player.api_key == api_key).first()
