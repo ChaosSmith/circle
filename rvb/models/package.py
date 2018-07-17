@@ -1,11 +1,12 @@
 from rvb import db
 from rvb.models import *
+from rvb.db.base import Base
 from datetime import datetime
 from sqlalchemy import func
 from flask import json
 from rvb.exceptions import ApiError
 
-class Package(db.Model):
+class Package(db.Model, Base):
     __tablename__ = 'packages'
 
     id = db.Column(db.Integer, primary_key=True)

@@ -1,11 +1,12 @@
 from rvb import db
 from rvb.models import *
+from rvb.db.base import Base
 from datetime import datetime
 from sqlalchemy import func
 from flask import json
 from rvb.exceptions import ApiError
 
-class Safehouse(db.Model):
+class Safehouse(db.Model, Base):
     __tablename__ = 'safehouses'
 
     id = db.Column(db.Integer, primary_key=True)

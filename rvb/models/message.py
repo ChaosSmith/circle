@@ -1,5 +1,6 @@
 from rvb import db
 from rvb.models import *
+from rvb.db.base import Base
 from datetime import datetime
 from sqlalchemy import func
 from sqlalchemy.exc import *
@@ -7,7 +8,7 @@ from rvb.exceptions import ApiError
 import random
 import math
 
-class Message(db.Model):
+class Message(db.Model, Base):
     __tablename__ = 'messages'
 
     id = db.Column(db.Integer, primary_key=True)

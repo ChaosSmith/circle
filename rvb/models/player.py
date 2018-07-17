@@ -1,11 +1,12 @@
 from rvb import db
 from rvb.models import *
+from rvb.db.base import Base
 from datetime import datetime
 import random
 from sqlalchemy import func
 from rvb.exceptions import ApiError
 
-class Player(db.Model):
+class Player(db.Model, Base):
     __tablename__ = 'players'
 
     id = db.Column(db.Integer, primary_key=True)

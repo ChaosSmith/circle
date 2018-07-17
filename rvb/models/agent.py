@@ -1,4 +1,5 @@
 from rvb import db
+from rvb.db.base import Base
 from datetime import datetime
 from sqlalchemy import func
 from flask import json
@@ -6,7 +7,7 @@ from rvb.exceptions import ApiError
 from rvb.models import *
 from rvb.models.safehouse import Safehouse
 from rvb.models.package import Package
-class Agent(db.Model):
+class Agent(db.Model, Base):
     __tablename__ = 'agents'
 
     id = db.Column(db.Integer, primary_key=True)
