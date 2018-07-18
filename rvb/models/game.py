@@ -5,7 +5,7 @@ from datetime import datetime
 import random
 from sqlalchemy import func
 
-class Game(db.Model):
+class Game(db.Model, Base):
     __tablename__ = 'games'
 
     id = db.Column(db.Integer, primary_key=True)

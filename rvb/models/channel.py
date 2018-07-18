@@ -4,7 +4,7 @@ from rvb.db.base import Base
 from datetime import datetime
 from sqlalchemy import func
 
-class Channel(db.Model):
+class Channel(db.Model, Base):
     __tablename__ = 'channels'
 
     id = db.Column(db.Integer, primary_key=True)

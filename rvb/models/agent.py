@@ -7,6 +7,7 @@ from rvb.exceptions import ApiError
 from rvb.models import *
 from rvb.models.safehouse import Safehouse
 from rvb.models.package import Package
+
 class Agent(db.Model, Base):
     __tablename__ = 'agents'
 

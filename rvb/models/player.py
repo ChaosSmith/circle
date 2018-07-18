@@ -23,12 +23,12 @@ class Player(db.Model, Base):
     def __repr__(self):
         return '<Player %r>' % self.id
 
-    def create(name, description):
-        new_player = Player(name=name, description=description)
-        db.session.add(new_player)
-        new_player.generate_api_key()
-        db.session.commit()
-        return new_player
+    # def create(name, description):
+    #     new_player = Player(name=name, description=description)
+    #     db.session.add(new_player)
+    #     new_player.generate_api_key()
+    #     db.session.commit()
+    #     return new_player
 
     def find_or_assign(ip_address):
         player = Player.query.filter(Player.ip_address == ip_address).first()
