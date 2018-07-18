@@ -22,6 +22,10 @@ def test_blank_route(client):
     rv = client.get('/')
     assert b'Hello :)! You have found the rvb api!' in rv.data
 
+def test_get_player(client):
+    rv = client.get('/player')
+    assert b'api_key' in rv.data
+
 def test_orm():
     player = Player.create(
         description="This is a test description",

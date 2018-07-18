@@ -21,5 +21,5 @@ def agent():
 
     elif request.method == 'GET':
         return json.jsonify(
-            'agents'=[agent.serialize() for agent in Agent.all()]
+            agents=[agent.serialize() for agent in Agent.all()]
             )

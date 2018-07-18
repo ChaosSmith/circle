@@ -4,7 +4,6 @@ from datetime import datetime
 from sqlalchemy import func
 from flask import json
 from rvb.exceptions import ApiError
-from rvb.models.player import Player
 
 class Agent(db.Model, Base):
     __tablename__ = 'agents'
@@ -20,7 +19,7 @@ class Agent(db.Model, Base):
 
     def __repr__(self):
         return '<Agent %r>' % self.id
-    
+
     def tag(self):
         self.update(tagged=True)
 
