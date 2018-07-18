@@ -22,7 +22,19 @@ class Base:
 
     @classmethod
     def find_by(cls, **kwargs):
-        return cls.query.filter(kwargs).first()
+        return cls.query.filter_by(**kwargs).first()
+
+    @classmethod
+    def where(cls, **kwargs):
+        return cls.query.filter_by(**kwargs).all()
+
+    @classmethod
+    def size(cls):
+        return cls.query.count()
+
+    @classmethod
+    def all(cls):
+        return cls.query.all()
 
     def update(self, **kwargs):
         for key, val in kwargs.items():

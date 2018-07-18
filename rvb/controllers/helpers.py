@@ -2,10 +2,10 @@ from rvb.models import *
 from flask import request, json
 from rvb.exceptions import ApiError
 
-def authenticate(request, expect):
+def authenticate(request):
     api_key = request.args.get('api_key')
     player = Player.current_user(api_key)
-    if player and player.name in expect:
+    if player:
         return player
     else:
         raise ApiError('Access Denied', status_code=401)
