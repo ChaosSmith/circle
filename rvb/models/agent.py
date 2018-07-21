@@ -27,7 +27,7 @@ class Agent(db.Model, Base):
         moves = [(self.x+1,self.y),(self.x-1,self.y),(self.x, self.y+1),(self.x,self.y-1)]
         return [move for move in moves if move[0] > -1 and move[0] < 100 and move[1] > -1 and move[1] < 100]
 
-    def serialize(self, requestor):
+    def serialize(self):
         return {'id': self.id, 'tagged': self.tagged, 'owner': self.player.name, 'x': self.x, 'y': self.y}
 
     def move(self,x,y):
