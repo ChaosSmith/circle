@@ -1,7 +1,7 @@
 from rvb import application
 from rvb.models import *
 from flask import Flask, request, json
-from rvb.controllers.helpers import authenticate, parse_data
+from rvb.controllers.helpers import authenticate, parse_data, validate_data
 
 @application.route('/player', methods=['GET', 'POST'])
 def player():
