@@ -18,7 +18,7 @@ class Base:
 
     @classmethod
     def find(cls, instance_id):
-        return cls.query.filter(csl.id == instance_id).first()
+        return cls.query.filter(cls.id == instance_id).first()
 
     @classmethod
     def find_by(cls, **kwargs):

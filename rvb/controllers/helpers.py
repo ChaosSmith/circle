@@ -1,4 +1,4 @@
-from rvb.models import *
+from rvb.models import Player
 from flask import request, json
 from rvb.exceptions import ApiError
 
