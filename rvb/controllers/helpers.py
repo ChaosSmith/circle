@@ -1,14 +1,6 @@
-from rvb.models import Player
+
 from flask import request, json
 from rvb.exceptions import ApiError
-
-def authenticate(request):
-    api_key = request.args.get('api_key')
-    player = Player.current_user(api_key)
-    if player:
-        return player
-    else:
-        raise ApiError('Access Denied', status_code=401)
 
 def parse_data(request):
     data = request.get_data().decode('utf8')

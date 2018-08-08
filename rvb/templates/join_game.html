@@ -1,0 +1,20 @@
+<!doctype html>
+<title>Join Game</title>
+<h1>Join A Game</h1>
+<h4>Enter the ID of the game you are trying to join, and a password if required</h4>
+
+<form action="{{ url_for('join_game') }}" method="post">
+  <div>{{ form.game_id.label }} : {{ form.game_id }}</div>
+  {% if form.game_id.errors %}
+      <ul class="errors">{% for error in form.game_id.errors %}<li>{{ error }}</li>{% endfor %}</ul>
+  {% endif %}
+  <div>{{ form.password.label }} : {{ form.password }}</div>
+  {% if form.password.errors %}
+      <ul class="errors">{% for error in form.password.errors %}<li>{{ error }}</li>{% endfor %}</ul>
+  {% endif %}
+  {{ form.csrf_token }}
+  {{ form.submit }}
+</form>
+
+<li><a href="/">Main Page <span class="sr-only">(current)</span></a></li>
+<li><a href="/logout">Logout <span class="sr-only">(current)</span></a></li>

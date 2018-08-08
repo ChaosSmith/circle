@@ -1,0 +1,43 @@
+<!doctype html>
+<title>Character Creation</title>
+<h1>Character Creation</h1>
+
+<form action="{{ url_for('create_character') }}" method="post">
+  <div>{{ form.first_name.label }} : {{ form.first_name }}</div>
+  {% if form.first_name.errors %}
+      <ul class="errors">{% for error in form.first_name.errors %}<li>{{ error }}</li>{% endfor %}</ul>
+  {% endif %}
+  <div>{{ form.last_name.label }} : {{ form.last_name }}</div>
+  {% if form.last_name.errors %}
+      <ul class="errors">{% for error in form.last_name.errors %}<li>{{ error }}</li>{% endfor %}</ul>
+  {% endif %}
+  <div>{{ form.strength.label }} : {{ form.strength }}</div>
+  {% if form.strength.errors %}
+      <ul class="errors">{% for error in form.strength.errors %}<li>{{ error }}</li>{% endfor %}</ul>
+  {% endif %}
+  <div>{{ form.dexterity.label }} : {{ form.dexterity }}</div>
+  {% if form.dexterity.errors %}
+      <ul class="errors">{% for error in form.dexterity.errors %}<li>{{ error }}</li>{% endfor %}</ul>
+  {% endif %}
+  <div>{{ form.constitution.label }} : {{ form.constitution }}</div>
+  {% if form.constitution.errors %}
+      <ul class="errors">{% for error in form.constitution.errors %}<li>{{ error }}</li>{% endfor %}</ul>
+  {% endif %}
+  <div>{{ form.wisdom.label }} : {{ form.wisdom }}</div>
+  {% if form.wisdom.errors %}
+      <ul class="errors">{% for error in form.wisdom.errors %}<li>{{ error }}</li>{% endfor %}</ul>
+  {% endif %}
+  <div>{{ form.intelligence.label }} : {{ form.intelligence }}</div>
+  {% if form.intelligence.errors %}
+      <ul class="errors">{% for error in form.intelligence.errors %}<li>{{ error }}</li>{% endfor %}</ul>
+  {% endif %}
+  <div>{{ form.charisma.label }} : {{ form.charisma }}</div>
+  {% if form.charisma.errors %}
+      <ul class="errors">{% for error in form.charisma.errors %}<li>{{ error }}</li>{% endfor %}</ul>
+  {% endif %}
+  {{ form.csrf_token }}
+  {{ form.submit }}
+</form>
+
+<li><a href="/">Main Page <span class="sr-only">(current)</span></a></li>
+<li><a href="/logout">Logout <span class="sr-only">(current)</span></a></li>

@@ -5,7 +5,6 @@ from datetime import datetime
 import random
 from sqlalchemy import func
 from rvb.exceptions import ApiError
-from rvb.models.agent import Agent
 
 class Character(db.Model, Base):
     __tablename__ = 'characters'
@@ -15,7 +14,7 @@ class Character(db.Model, Base):
     game_id = db.Column(db.Integer, db.ForeignKey('games.id'), nullable=False, index=True)
     first_name = db.Column(db.String, nullable=False)
     last_name = db.Column(db.String, nullable=False)
-    actions = db.Column(db.Integers)
+    actions = db.Column(db.Integer)
     x = db.Column(db.Integer,nullable=False)
     y = db.Column(db.Integer,nullable=False)
     strength = db.Column(db.Integer)

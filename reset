@@ -1,5 +1,0 @@
-#!/usr/bin/env python3
-
-from rvb import controls
-
-controls.recreate_db()

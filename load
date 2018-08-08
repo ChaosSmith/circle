@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
 
 from rvb import db
+from rvb.controls import setup
+
 db.create_all()
+setup()
