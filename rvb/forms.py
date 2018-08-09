@@ -18,7 +18,7 @@ class JoinGameForm(Form):
 class CharacterCreationForm(Form):
     first_name = StringField('First Name', validators=[DataRequired()])
     last_name = StringField('Last Name', validators=[DataRequired()])
-    strength = IntegerField('Strength', validators=[DataRequired()],NumberRange(min=6,max=20))
+    strength = IntegerField('Strength', validators=[DataRequired(),NumberRange(min=6,max=20)])
     dexterity = IntegerField('Dexterity', validators=[DataRequired(),NumberRange(min=6,max=20)])
     constitution = IntegerField('Constitution', validators=[DataRequired(),NumberRange(min=6,max=20)])
     intelligence = IntegerField('Intelligence', validators=[DataRequired(),NumberRange(min=6,max=20)])
