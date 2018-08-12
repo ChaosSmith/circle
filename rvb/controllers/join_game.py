@@ -19,20 +19,20 @@ def join_game():
                 # Game has a password
                 if game.password == form.password.data:
                     user.join_game(game.id)
-                    return redirect(url_for("main"))
+                    return redirect(url_for("game",game_id=game.id))
                 else:
                     form.password.errors.append("Password is incorrect")
-                    return render_template("join_game.html", user=user, form=form)
+                    return render_template("join_game.html", user=user, form=form, navbar=True)
             else:
                 # No password clear to join
                 # TODO enforce player limits in a game
                 user.join_game(game.id)
-                return redirect(url_for("main"))
+                return redirect(url_for("game", game_id=game.id))
         else:
             # Game Does Not Exists
             form.game_id.errors.append("Could not find a game with id #{id}".format(id=form.game_id.data))
-            return render_template("join_game.html", user=user, form=form)
+            return render_template("join_game.html", user=user, form=form, navbar=True)
 
     elif request.method == "GET" or request.method == "POST":
         # Render Game Information And Button To Join, Possibly Game Password
-        return render_template("join_game.html", user=user, form=form)
+        return render_template("join_game.html", user=user, form=form, navbar=True)

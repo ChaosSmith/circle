@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %}
+Home
+{% endblock %}
+{% block content %}
+{% if user %}
+<h2>Games</h2>
+{% if user.games|length > 0 %}
+{% for game in user.games %}
+  <h3> {{game.name}} <span><a href={{ "/game/" + game.id|string }}>Enter</a></span></h3>
+{% endfor %}
+{% else %}
+<h3>You are not in any games yet!</h3>
+{% endif %}
+<br>
+<li><a href="/new_game">New Game</a></li>
+<li><a href="/join_game">Join Game</a></li>
+{% else %}
+<h1>Frontier</h1>
+<li><a href="/login">Login</li>
+<li><a href="/create_account">Register</li>
+{% endif %}
+{% endblock %}

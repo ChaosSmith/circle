@@ -6,7 +6,9 @@ from rvb.controllers.helpers import parse_data, validate_data
 from rvb.exceptions import ApiError
 
 @application.route("/", methods=["GET"])
-@login_required
-def main():
-    current_user = User.find(session["user_id"])
-    return render_template("main.html", user=current_user)
+def home():
+    if "user_id" in session.keys():
+        user = User.find(session["user_id"])
+        return render_template("home.html", user=user, navbar=True)
+    else:
+        return render_template("home.html", user=None, navbar=False)

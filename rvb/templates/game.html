@@ -1,5 +1,8 @@
-<!doctype html>
-<title>Game {{ game.id }}</title>
+{% extends 'base.html' %}
+{% block title %}
+Game {{ game.id }}
+{% endblock %}
+{% block content %}
 <h1>{{ game.name }}</h1>
 <h4>Created At: {{ game.created_at }}</h4>
 <br>
@@ -8,16 +11,22 @@
   <h4> {{user.email}} </h4>
 {% endfor %}
 <br>
-<h2>Game will be ready when its ready</h2>
+<h2>Game will be ready when its ready...</h2>
 <br>
-<table>
-{% for x in range(game.length) %}
-  <tr>
-  {% for y in range(game.height) %}
-    <td>{{ display[x][y] }}</td>
+<section id='board'>
+  <table class='gameboard'>
+  {% for x in range(game.length) %}
+    <tr>
+    {% for y in range(game.height) %}
+      {% if display[y][x] == 'M' %}
+        <td><a onclick='move({{x}},{{y}},{{game.id}})'>{{ display[y][x] }}</a></td>
+      {% else %}
+        <td>{{ display[y][x] }}</td>
+      {% endif %}
+    {% endfor %}
+    </tr>
   {% endfor %}
-  </tr>
-{% endfor %}
-</table>
-<li><a href="/">Main Page <span class="sr-only">(current)</span></a></li>
-<li><a href="/logout">Logout <span class="sr-only">(current)</span></a></li>
+  </table>
+</section>
+<script>run({{game.id}})</script>
+{% endblock %}

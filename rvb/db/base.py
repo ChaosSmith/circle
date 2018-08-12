@@ -36,6 +36,10 @@ class Base:
     def all(cls):
         return cls.query.all()
 
+    @classmethod
+    def first(cls):
+        return cls.query.first()
+
     def update(self, **kwargs):
         for key, val in kwargs.items():
             setattr(self, key, val)

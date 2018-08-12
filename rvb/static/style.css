@@ -1,0 +1,16 @@
+.content {
+  padding: 1em;
+  margin: 2em auto;
+  text-align: center;
+}
+
+.gameboard {
+  border-collapse:collapse;
+  border:1px solid #FF0000;
+}
+
+.gameboard td {
+  border:1px solid #FF0000;
+  min-width: 16px;
+  height: 18px;
+}

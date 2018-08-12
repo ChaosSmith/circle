@@ -1,0 +1,15 @@
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+<table class='gameboard'>
+{% for x in range(game.length) %}
+  <tr>
+  {% for y in range(game.height) %}
+    {% if display[y][x] == 'M' %}
+      <td><a onclick='move({{x}},{{y}},{{game.id}})'>{{ display[y][x] }}</a></td>
+    {% else %}
+      <td>{{ display[y][x] }}</td>
+    {% endif %}
+  {% endfor %}
+  </tr>
+{% endfor %}
+</table>

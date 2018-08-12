@@ -1,8 +1,11 @@
-<!doctype html>
-<title>Character Creation</title>
+{% extends 'base.html' %}
+{% block title %}
+New Character
+{% endblock %}
+{% block content %}
 <h1>Character Creation</h1>
-
-<form action="{{ url_for('create_character') }}" method="post">
+<p>Create a character to join {{game.name}}</p>
+<form action="{{ url_for('create_character', game_id=game.id) }}" method="post">
   <div>{{ form.first_name.label }} : {{ form.first_name }}</div>
   {% if form.first_name.errors %}
       <ul class="errors">{% for error in form.first_name.errors %}<li>{{ error }}</li>{% endfor %}</ul>
@@ -38,6 +41,4 @@
   {{ form.csrf_token }}
   {{ form.submit }}
 </form>
-
-<li><a href="/">Main Page <span class="sr-only">(current)</span></a></li>
-<li><a href="/logout">Logout <span class="sr-only">(current)</span></a></li>
+{% endblock %}

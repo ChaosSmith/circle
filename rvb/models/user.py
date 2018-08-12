@@ -17,6 +17,7 @@ class User(db.Model, Base, UserMixin):
     confirmed_at = db.Column(db.TIMESTAMP)
     roles = db.relationship("RoleUser", back_populates="user")
     games = db.relationship("Game", secondary="users_games", back_populates="users")
+    characters = db.relationship('Character', back_populates='user')
     created_at = db.Column(db.TIMESTAMP, server_default=func.now())
     updated_at = db.Column(db.TIMESTAMP, server_default=func.now(),onupdate=func.current_timestamp())
 

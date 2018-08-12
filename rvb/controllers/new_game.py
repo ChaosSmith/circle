@@ -12,7 +12,7 @@ def new_game():
     current_user = User.find(session["user_id"])
     form = NewGameForm()
     if request.method == 'POST' and form.validate_on_submit():
-        Game.new_game(
+        game = Game.new_game(
             creator=current_user,
             name=form.name.data,
             height=form.height.data,
@@ -20,8 +20,8 @@ def new_game():
             villages=form.villages.data,
             password=form.password.data
             )
-        return redirect(url_for("main"))
+        return redirect(url_for("game", game_id=game.id))
     elif request.method == 'POST':
-        return render_template("new_game.html", user=current_user, form=form)
+        return render_template("new_game.html", user=current_user, form=form, navbar=True)
     elif request.method == 'GET':
-        return render_template("new_game.html", user=current_user, form=form)
+        return render_template("new_game.html", user=current_user, form=form, navbar=True)

@@ -28,9 +28,10 @@ class Game(db.Model, Base):
     updated_at = db.Column(db.TIMESTAMP, server_default=func.now(),onupdate=func.current_timestamp())
 
     def new_game(creator, villages, length, height, name, password):
-        new_game = Game.create(name=name,height=height,length=length, password=password)
-        new_game.spawn_villages(villages)
-        creator.join_game(new_game.id)
+        game = Game.create(name=name,height=height,length=length, password=password)
+        game.spawn_villages(villages)
+        creator.join_game(game.id)
+        return game
 
     def __repr__(self):
         return '<Game %r>' % self.id
@@ -87,18 +88,24 @@ class Game(db.Model, Base):
                 )
             )
 
-    def display(self):
+    def display(self, viewer=None):
         villages = self.villages
-        grid = []
+        characters = self.characters
+        if viewer:
+            legal_moves = viewer.legal_moves()
+        print(characters[0].x)
+        grid = [[" " for x in range(self.length)] for y in range(self.height)]
         for x in range(self.length):
-            grid.append([])
             for y in range(self.height):
                 for village in villages:
                     if village.x == x and village.y == y:
-                        grid[x].append("V")
+                        grid[y][x] = "V"
                         break
-                if len(grid[x]) == y+1:
-                    continue
-                else:
-                    grid[x].append(" ")
+                for character in characters:
+                    if character.x == x and character.y == y:
+                        grid[y][x] = "P"
+                if viewer:
+                    for move in legal_moves:
+                        if move[0] == x and move[1] == y:
+                            grid[y][x] = "M"
         return grid

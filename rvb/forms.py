@@ -25,3 +25,11 @@ class CharacterCreationForm(Form):
     wisdom = IntegerField('Wisdom', validators=[DataRequired(),NumberRange(min=6,max=20)])
     charisma = IntegerField('Charisma', validators=[DataRequired(),NumberRange(min=6,max=20)])
     submit = SubmitField('Create Character')
+
+# Classes
+#
+# engineer (Wisdom)  Lvl 5, exp 1000
+# scientists (Intelligence) lvl 20 scientist
+# merchants (Charisma)
+# soldier (Strength) Lvl 5
+# rogue (Dexterity)

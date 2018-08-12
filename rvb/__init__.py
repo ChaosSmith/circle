@@ -32,10 +32,10 @@ from rvb.exceptions import *
 from rvb.controllers import *
 
 # Views
-@application.route('/')
-@login_required
-def home():
-    return 'Here you go!'
+# @application.route('/')
+# @login_required
+# def home():
+#     return 'Here you go!'
 
 
 
