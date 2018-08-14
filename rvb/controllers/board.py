@@ -14,6 +14,7 @@ def board(game_id):
     character = Character.find_by(game_id=game_id,user_id=session["user_id"])
     if game and character and game in user.games:
         display = game.display(viewer=character)
+        print(display)
         return render_template("board.html", game=game, display=display)
     else:
         raise ApiError("Action Not Permited", 400)

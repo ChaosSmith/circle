@@ -16,7 +16,7 @@ def new_game():
             creator=current_user,
             name=form.name.data,
             height=form.height.data,
-            length=form.length.data,
+            width=form.width.data,
             villages=form.villages.data,
             password=form.password.data
             )

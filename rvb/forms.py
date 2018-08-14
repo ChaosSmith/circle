@@ -5,7 +5,7 @@ from wtforms.validators import DataRequired, Email, NumberRange
 class NewGameForm(Form):
     name = StringField('Game Name', validators=[DataRequired()])
     height = IntegerField('Game Board Height', validators=[DataRequired(),NumberRange(min=10, max=100)])
-    length = IntegerField('Game Board Length', validators=[DataRequired(),NumberRange(min=10, max=100)])
+    width = IntegerField('Game Board Width', validators=[DataRequired(),NumberRange(min=10, max=100)])
     villages = IntegerField('Starting Villages', validators=[DataRequired(),NumberRange(min=1, max=10)])
     password = PasswordField('Optional Password', validators=[])
     submit = SubmitField('Submit')

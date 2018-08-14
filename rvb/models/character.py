@@ -1,5 +1,4 @@
 from rvb import db
-from rvb.models import *
 from rvb.db.base import Base
 from datetime import datetime
 import random, math
@@ -66,7 +65,7 @@ class Character(db.Model, Base):
 
     def legal_moves(self):
         moves = [(self.x+1,self.y),(self.x-1,self.y),(self.x, self.y+1),(self.x,self.y-1)]
-        return [move for move in moves if move[0] > -1 and move[0] <= self.game.length and move[1] > -1 and move[1] <= self.game.height]
+        return [move for move in moves if move[0] > -1 and move[0] <= self.game.width and move[1] > -1 and move[1] <= self.game.height]
 
     def move(self,x,y):
         if (x,y) in self.legal_moves():

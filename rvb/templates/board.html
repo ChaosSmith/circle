@@ -1,15 +1,15 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 
 <table class='gameboard'>
-{% for x in range(game.length) %}
-  <tr>
-  {% for y in range(game.height) %}
-    {% if display[y][x] == 'M' %}
-      <td><a onclick='move({{x}},{{y}},{{game.id}})'>{{ display[y][x] }}</a></td>
-    {% else %}
-      <td>{{ display[y][x] }}</td>
-    {% endif %}
+  {% for row in display %}
+    <tr>
+    {% for tile in row %}
+      {% if tile["move"] %}
+        <td style='background-color: green;' onclick='move({{tile["x"]}},{{tile["y"]}},{{game.id}})'>{{ tile["tile"] }}</td>
+      {% else %}
+        <td>{{ tile["tile"] }}</td>
+      {% endif %}
+    {% endfor %}
+    </tr>
   {% endfor %}
-  </tr>
-{% endfor %}
 </table>

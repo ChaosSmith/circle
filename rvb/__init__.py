@@ -31,13 +31,5 @@ mail = Mail(application)
 from rvb.exceptions import *
 from rvb.controllers import *
 
-# Views
-# @application.route('/')
-# @login_required
-# def home():
-#     return 'Here you go!'
-
-
-
 if __name__ == '__main__':
     application.run()

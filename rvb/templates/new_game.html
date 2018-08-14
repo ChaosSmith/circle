@@ -7,9 +7,9 @@
   {% if form.name.errors %}
       <ul class="errors">{% for error in form.name.errors %}<li>{{ error }}</li>{% endfor %}</ul>
   {% endif %}
-  <div>{{ form.length.label }} : {{ form.length }}</div>
-  {% if form.length.errors %}
-      <ul class="errors">{% for error in form.length.errors %}<li>{{ error }}</li>{% endfor %}</ul>
+  <div>{{ form.width.label }} : {{ form.width }}</div>
+  {% if form.width.errors %}
+      <ul class="errors">{% for error in form.width.errors %}<li>{{ error }}</li>{% endfor %}</ul>
   {% endif %}
   <div>{{ form.height.label }} : {{ form.height }}</div>
   {% if form.height.errors %}

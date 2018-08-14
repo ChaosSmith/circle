@@ -1,5 +1,4 @@
 from rvb import db
-from rvb.models import *
 from rvb.db.base import Base
 from datetime import datetime
 import random

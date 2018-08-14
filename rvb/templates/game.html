@@ -15,13 +15,13 @@ Game {{ game.id }}
 <br>
 <section id='board'>
   <table class='gameboard'>
-  {% for x in range(game.length) %}
+  {% for row in display %}
     <tr>
-    {% for y in range(game.height) %}
-      {% if display[y][x] == 'M' %}
-        <td><a onclick='move({{x}},{{y}},{{game.id}})'>{{ display[y][x] }}</a></td>
+    {% for tile in row %}
+      {% if tile["move"] %}
+        <td style='background-color: green;' onclick='move({{tile["x"]}},{{tile["y"]}},{{game.id}})'>{{ tile["tile"] }}</td>
       {% else %}
-        <td>{{ display[y][x] }}</td>
+        <td>{{ tile["tile"] }}</td>
       {% endif %}
     {% endfor %}
     </tr>

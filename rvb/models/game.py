@@ -8,7 +8,7 @@ from sqlalchemy import func
 from flask import json
 from rvb.exceptions import ApiError
 from rvb.utils import season_map
-from rvb.models.village import Village
+from rvb.lib.grid import build_grid
 
 class Game(db.Model, Base):
     __tablename__ = 'games'
@@ -19,28 +19,24 @@ class Game(db.Model, Base):
     villages = db.relationship('Village', back_populates='game')
     name = db.Column(db.String, nullable=False)
     password = db.Column(db.String)
-    length = db.Column(db.Integer,nullable=False)
+    width = db.Column(db.Integer,nullable=False)
     height = db.Column(db.Integer,nullable=False)
     ticks = db.Column(db.Integer, server_default="0")
     last_tick_at = db.Column(db.TIMESTAMP)
+    grid = db.Column(db.JSON, nullable=False, server_default='[]')
     active = db.Column(db.Boolean, server_default='f')
     created_at = db.Column(db.TIMESTAMP, server_default=func.now())
     updated_at = db.Column(db.TIMESTAMP, server_default=func.now(),onupdate=func.current_timestamp())
 
-    def new_game(creator, villages, length, height, name, password):
-        game = Game.create(name=name,height=height,length=length, password=password)
-        game.spawn_villages(villages)
+    def new_game(creator, villages, width, height, name, password):
+        game = Game.create(name=name,height=height,width=width, password=password)
+        grid = build_grid(width, height, game.id, 4, 80, villages)
+        game.update(grid=grid)
         creator.join_game(game.id)
         return game
 
     def __repr__(self):
         return '<Game %r>' % self.id
-
-    def spawn_villages(self, number):
-        for _ in range(number):
-            x = random.randint(0,self.length)
-            y = random.randint(0,self.height)
-            Village.create(x=x, y=y, population=100, food=100, game_id=self.id)
 
     def tick(self):
 
@@ -93,19 +89,16 @@ class Game(db.Model, Base):
         characters = self.characters
         if viewer:
             legal_moves = viewer.legal_moves()
-        print(characters[0].x)
-        grid = [[" " for x in range(self.length)] for y in range(self.height)]
-        for x in range(self.length):
-            for y in range(self.height):
-                for village in villages:
-                    if village.x == x and village.y == y:
-                        grid[y][x] = "V"
-                        break
+        grid = self.grid
+        for row in grid:
+            for tile in row:
                 for character in characters:
-                    if character.x == x and character.y == y:
-                        grid[y][x] = "P"
+                    if character.x == tile["x"] and character.y == tile["y"]:
+                        tile["tile"] = "P"
+                        break
                 if viewer:
                     for move in legal_moves:
-                        if move[0] == x and move[1] == y:
-                            grid[y][x] = "M"
+                        if move[0] == tile["x"] and move[1] == tile["y"]:
+                            tile["move"] = True
+
         return grid

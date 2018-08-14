@@ -1,5 +1,4 @@
 from rvb import db
-from rvb.models import *
 from rvb.db.base import Base
 from datetime import datetime
 import random
@@ -28,4 +27,5 @@ class User(db.Model, Base, UserMixin):
         RoleUser.create(user_id=self.id, role_id=self.id)
 
     def join_game(self, game_id):
+        from rvb.models.user_game import UserGame
         UserGame.create(user_id=self.id, game_id=game_id)
