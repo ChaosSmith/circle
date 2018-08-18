@@ -27,4 +27,4 @@ def game(game_id):
             return redirect(url_for("join_game"))
     else:
         # Game does not exist
-        return redirect(url_for("main"))
+        return redirect(url_for("home"))
