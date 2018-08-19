@@ -16,6 +16,7 @@ class Game(db.Model, Base):
     users = db.relationship("User", secondary="users_games", back_populates="games")
     characters = db.relationship('Character', back_populates='game')
     villages = db.relationship('Village', back_populates='game')
+    encounters = db.relationship('Encounter', back_populates='game')
     name = db.Column(db.String, nullable=False)
     password = db.Column(db.String)
     width = db.Column(db.Integer,nullable=False)

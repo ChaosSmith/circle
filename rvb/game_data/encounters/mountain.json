@@ -1,0 +1,56 @@
+[
+    {
+        "title": "At the foothills",
+        "text": "You've arrived at the foothills of a mountain, its not going to be easy hiking from here on out.",
+        "type": "choice",
+        "data": {
+            "options": [{"id": 0, "text": "Attempt the climb", "go_to": 2}, {"id": 1, "text": "Go back", "go_to": 1}]
+        }
+    },
+    {
+        "title": "At the foothills",
+        "text": "Thinking better of it you turn back the way you came.",
+        "type": "resolution",
+        "data": {
+            "effects": []
+        }
+    },
+    {
+        "title": "The climb",
+        "text": "Climbing is difficult work! It will take all of your strength to make it to the top",
+        "type": "skill",
+        "data": {
+            "skill": "athletics",
+            "results": [
+                {
+                "text": "While attempting to climb a rock wall your strength fails you and you plumit to the ground, OWWWCH!",
+                "effects": [{"func": "lose_health", "inputs": {"amount": 5}}],
+                "go_to": 3,
+                "range": [1,10]
+                },
+                {
+                "text": "The climb is difficult but not impossible, and you make steady progress.",
+                "effects": [],
+                "go_to": 4,
+                "range": [11,20]
+                }
+            ]
+        }
+    },
+    {
+        "title": "Defeat",
+        "text": "Nursing your injuries you retreat back the way you came. The mountain has defeated you.",
+        "type": "resolution",
+        "data": {
+            "effects": []
+        }
+    },
+    {
+        "title": "Success",
+        "text": "Breathing heavily in the thin air you emerge at the summit, the view is spectacular!",
+        "type": "resolution",
+        "data": {
+            "effects": [{"func": "move_to", "inputs": {"x": "x", "y": "y"}}]
+        }
+    }
+]

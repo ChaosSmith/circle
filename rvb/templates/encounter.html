@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block title %}
+Encounter {{ encounter.title }}
+{% endblock %}
+{% block content %}
+<h1>{{ encounter.title }}</h1>
+<h2>{{ scene.title }}</h2>
+<p>{{ scene.type }}</p>
+<p>{{ scene.text }}</p>
+{% if scene["type"] == 'choice' %}
+  <ul>
+    {% for option in scene["options"] %}
+      <li><a onclick='choice({{ encounter.id }},{ option_id: {{ option["id"] }} })'> {{ option["text"] }}</a></li>
+    {% endfor %}
+  </ul>
+{% elif scene["type"] == 'resolution' %}
+  {% for message in scene.messages %}
+    <p> {{ message }} </p>
+    {% endfor %}
+  <ul>
+    <li><a onclick='choice({{ encounter.id }},{ resolve: true })'> Okay </a></li>
+  </ul>
+{% elif scene["type"] == 'skill' %}
+  {% if scene["rolled"] %}
+    <p> Rolled a {{ scene.roll }} </p>
+    <p>{{ scene.result.text }}</p>
+    {% for message in scene.result.messages %}
+      <p> {{ message }} </p>
+    {% endfor %}
+    <ul>
+      <li><a onclick='choice({{ encounter.id }},{ proceed: true })'> Okay </a></li>
+    </ul>
+  {% else %}
+    <ul>
+      <li><a onclick='choice({{ encounter.id }},{ roll: true })'> Roll </a></li>
+    </ul>
+  {% endif %}
+{% else %}
+<p> We should not be here yet...</p>
+{% endif %}
+{% endblock %}

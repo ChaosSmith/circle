@@ -13,6 +13,8 @@ def board(game_id):
     game = Game.find(game_id)
     character = Character.find_by(game_id=game_id,user_id=session["user_id"])
     if game and character and game in user.games:
+        open_encounter = Encounter.find_by(character_id=character.id, game_id=game_id, completed_at=None)
+        if open_encounter: raise ApiError("Reload Required", 407)
         display = game.display(viewer=character)
         return render_template("board.html", game=game, display=display)
     else:

@@ -1,9 +1,11 @@
 from rvb import db
 from rvb.db.base import Base
 from datetime import datetime
-import random, math
-from sqlalchemy import func, text
+import random, math, json
+from sqlalchemy.dialects.postgresql import JSONB
+from sqlalchemy import text
 from rvb.exceptions import ApiError
+from rvb.models.encounter import Encounter
 
 class Character(db.Model, Base):
     __tablename__ = 'characters'
@@ -12,6 +14,7 @@ class Character(db.Model, Base):
     game_id = db.Column(db.Integer, db.ForeignKey('games.id'), nullable=False, index=True)
     user = db.relationship('User', back_populates='characters')
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False, index=True)
+    encounters = db.relationship('Encounter', back_populates='character')
     first_name = db.Column(db.String, nullable=False)
     last_name = db.Column(db.String, nullable=False)
     actions = db.Column(db.Integer)
@@ -26,6 +29,7 @@ class Character(db.Model, Base):
     experience = db.Column(db.Integer, server_default=text("0"))
     max_health = db.Column(db.Integer)
     health = db.Column(db.Integer)
+    skills = db.Column(JSONB, server_default='[]', nullable=False)
 
     def __repr__(self):
         return '<Character %r>' % self.id
@@ -66,6 +70,49 @@ class Character(db.Model, Base):
 
     def move(self,x,y):
         if (x,y) in self.legal_moves():
-            self.update(x=x,y=y)
+            if self.game.grid[y][x]["tile"] == "M" and self.game.grid[self.y][self.x]["tile"] != "M":
+                return Encounter.build(self.game, self, x, y, "mountain", "Mountain Climbing")
+            else:
+                self.update(x=x,y=y)
+                return None
         else:
             raise ApiError("Illegal Move", 400)
+
+    def attribute_modifier(self, attribute):
+        atr = getattr(self, attribute)
+        if atr >= 10:
+            return math.floor((atr - 10) / 2.0)
+        else:
+            return math.ceil((atr - 10) / 2.0)
+
+    def lose_health(self, amount=0):
+        # An effect
+        self.update(health=self.health - amount)
+        return "You lost {h} health!".format(h=amount)
+
+    def move_to(self, x, y):
+        self.update(x=x,y=y)
+        return "You are now at {x}, {y}".format(x=x,y=y)
+
+    def apply_effect(self, effect):
+        func = getattr(self, effect["func"])
+        return func(**effect["inputs"])
+
+    def skill_check(self, skill_name):
+        modifier = 0
+
+        with open('./rvb/game_data/skills.json') as s:
+            skill_list = json.load(s)
+
+        skill = [skill for skill in skill_list if skill["name"] == skill_name][0]
+        character_skill = [skill for skill in self.skills if skill["name"] == skill_name]
+
+        if len(character_skill) > 0:
+            character_skill = character_skill[0]
+            modifier += Math.ceil(character_skill["level"] / 2.0)
+        else:
+            modifier -= 2 # Unskilled Penalty
+
+        modifier += self.attribute_modifier(skill["attribute"])
+
+        return random.randint(1,20) + modifier

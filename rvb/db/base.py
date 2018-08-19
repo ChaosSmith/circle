@@ -48,6 +48,9 @@ class Base:
     def update(self, **kwargs):
         for key, val in kwargs.items():
             setattr(self, key, val)
+        self.save()
+
+    def save(self):
         try:
             db.session.commit()
             return True

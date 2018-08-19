@@ -17,6 +17,9 @@ def game(game_id):
             # User is currently involved in this game
             if character:
                 # Already Has Character
+                open_encounter = Encounter.find_by(character_id=character.id, game_id=game_id, completed_at=None)
+                if open_encounter: return redirect(url_for('encounter',encounter_id=open_encounter.id))
+                # if open_encounter: return render_template('encounter.html', game=game, user=user, encounter=encounter, navbar=True)
                 display = game.display(viewer=character)
                 return render_template("game.html", game=game, user=user, display=display, navbar=True)
             else:

@@ -8,6 +8,7 @@ const move = function(x,y,game_id) {
     },
     error: function(error) {
       console.log(error);
+      location.reload(true);
     }
   });
 }
@@ -21,6 +22,7 @@ const refresh = function(game_id) {
     },
     error: function(error) {
       console.log(error);
+      location.reload(true);
     }
   });
 }
@@ -33,4 +35,18 @@ async function run(game_id) {
   await sleep(5000);
   refresh(game_id);
   run(game_id);
+}
+
+const choice = function(encounter_id, data) {
+  $.ajax({
+    type: "POST",
+    url: `/encounter/${encounter_id}`,
+    data: data,
+    success: function(response) {
+      location.reload(true);
+    },
+    error: function(error) {
+      console.log(error);
+    }
+  });
 }

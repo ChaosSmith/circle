@@ -15,8 +15,13 @@ def move():
     game = Game.find(game_id)
     character = Character.find_by(game_id=game_id,user_id=session["user_id"])
     if game and character and game in user.games:
-        character.move(int(data['x']),int(data['y']))
-        display = game.display(viewer=character)
-        return render_template("board.html", game=game, display=display)
+        encounter = character.move(int(data['x']),int(data['y']))
+        if encounter:
+            # Found something
+            raise ApiError("Reload Required", 407)
+        else:
+            # No encounter, move normally
+            display = game.display(viewer=character)
+            return render_template("board.html", game=game, display=display)
     else:
         raise ApiError("Action Not Permited", 400)
