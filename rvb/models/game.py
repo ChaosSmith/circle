@@ -13,7 +13,6 @@ from rvb.lib.grid import build_grid
 class Game(db.Model, Base):
     __tablename__ = 'games'
 
-    id = db.Column(db.Integer, primary_key=True)
     users = db.relationship("User", secondary="users_games", back_populates="games")
     characters = db.relationship('Character', back_populates='game')
     villages = db.relationship('Village', back_populates='game')
@@ -25,8 +24,6 @@ class Game(db.Model, Base):
     last_tick_at = db.Column(db.TIMESTAMP)
     grid = db.Column(db.JSON, nullable=False, server_default='[]')
     active = db.Column(db.Boolean, server_default='f')
-    created_at = db.Column(db.TIMESTAMP, server_default=func.now())
-    updated_at = db.Column(db.TIMESTAMP, server_default=func.now(),onupdate=func.current_timestamp())
 
     def new_game(creator, villages, width, height, name, password):
         game = Game.create(name=name,height=height,width=width, password=password)

@@ -12,15 +12,12 @@ from rvb.utils import season_food, season_map
 class Village(db.Model, Base):
     __tablename__ = 'villages'
 
-    id = db.Column(db.Integer, primary_key=True)
     game = db.relationship('Game', back_populates='villages')
     game_id = db.Column(db.Integer, db.ForeignKey('games.id'), nullable=False, index=True)
     x = db.Column(db.Integer,nullable=False)
     y = db.Column(db.Integer,nullable=False)
     food = db.Column(db.Integer, server_default="0", nullable=False)
     population = db.Column(db.Integer, server_default="0", nullable=False)
-    created_at = db.Column(db.TIMESTAMP, server_default=func.now())
-    updated_at = db.Column(db.TIMESTAMP, server_default=func.now(),onupdate=func.current_timestamp())
 
     def __repr__(self):
         return '<Village %r>' % self.id

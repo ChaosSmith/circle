@@ -8,7 +8,6 @@ from rvb.exceptions import ApiError
 class Character(db.Model, Base):
     __tablename__ = 'characters'
 
-    id = db.Column(db.Integer, primary_key=True)
     game = db.relationship('Game', back_populates='characters')
     game_id = db.Column(db.Integer, db.ForeignKey('games.id'), nullable=False, index=True)
     user = db.relationship('User', back_populates='characters')
@@ -27,8 +26,6 @@ class Character(db.Model, Base):
     experience = db.Column(db.Integer, server_default=text("0"))
     max_health = db.Column(db.Integer)
     health = db.Column(db.Integer)
-    created_at = db.Column(db.TIMESTAMP, server_default=func.now())
-    updated_at = db.Column(db.TIMESTAMP, server_default=func.now(),onupdate=func.current_timestamp())
 
     def __repr__(self):
         return '<Character %r>' % self.id

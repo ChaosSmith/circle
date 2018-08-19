@@ -9,7 +9,6 @@ from flask_security import UserMixin
 class User(db.Model, Base, UserMixin):
     __tablename__ = 'users'
 
-    id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String, unique=True)
     password = db.Column(db.String)
     active = db.Column(db.Boolean)
@@ -17,8 +16,6 @@ class User(db.Model, Base, UserMixin):
     roles = db.relationship("RoleUser", back_populates="user")
     games = db.relationship("Game", secondary="users_games", back_populates="users")
     characters = db.relationship('Character', back_populates='user')
-    created_at = db.Column(db.TIMESTAMP, server_default=func.now())
-    updated_at = db.Column(db.TIMESTAMP, server_default=func.now(),onupdate=func.current_timestamp())
 
     def __repr__(self):
         return '<User %r>' % self.id

@@ -1,6 +1,11 @@
 from rvb import db
+from sqlalchemy import func, text
 
 class Base:
+
+    id = db.Column(db.Integer, primary_key=True)
+    created_at = db.Column(db.TIMESTAMP, server_default=func.now())
+    updated_at = db.Column(db.TIMESTAMP, server_default=func.now(),onupdate=func.current_timestamp())
 
     @classmethod
     def create(cls, **kwargs):

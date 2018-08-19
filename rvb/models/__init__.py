@@ -5,3 +5,4 @@ from rvb.models.role_user import RoleUser
 from rvb.models.role import Role
 from rvb.models.character import Character
 from rvb.models.village import Village
+from rvb.models.encounter import Encounter
