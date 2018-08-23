@@ -26,4 +26,12 @@ def encounter(encounter_id):
     if request.method == "POST":
         data = request.form.to_dict(flat=True)
         encounter.send(**data)
-        return redirect(url_for("encounter", encounter_id=encounter.id))
+        if encounter.finished: return redirect(url_for("game", game_id=game.id))
+        return render_template(
+            'encounter.html',
+            game=game,
+            user=user,
+            encounter=encounter,
+            scene=encounter.scenes[encounter.current_scene],
+            navbar=True
+        )

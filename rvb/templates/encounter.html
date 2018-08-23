@@ -8,18 +8,24 @@ Encounter {{ encounter.title }}
 <p>{{ scene.type }}</p>
 <p>{{ scene.text }}</p>
 {% if scene["type"] == 'choice' %}
-  <ul>
-    {% for option in scene["options"] %}
-      <li><a onclick='choice({{ encounter.id }},{ option_id: {{ option["id"] }} })'> {{ option["text"] }}</a></li>
-    {% endfor %}
-  </ul>
+  {% for option in scene["options"] %}
+    <!-- <li><a onclick='choice({{ encounter.id }},{ option_id: {{ option["id"] }} })'> {{ option["text"] }}</a></li> -->
+    <form action='/encounter/{{ encounter.id }}' method='post'>
+      <input type="hidden" name="option_id" value='{{ option["id"] }}'>
+      <input type="submit" value='{{ option["text"] }}'>
+    </form>
+  {% endfor %}
 {% elif scene["type"] == 'resolution' %}
   {% for message in scene.messages %}
     <p> {{ message }} </p>
     {% endfor %}
-  <ul>
+  <!-- <ul>
     <li><a onclick='choice({{ encounter.id }},{ resolve: true })'> Okay </a></li>
-  </ul>
+  </ul> -->
+  <form action='/encounter/{{ encounter.id }}' method='post'>
+    <input type="hidden" name="resolve" value='{{ True }}'>
+    <input type="submit" value="Okay">
+  </form>
 {% elif scene["type"] == 'skill' %}
   {% if scene["rolled"] %}
     <p> Rolled a {{ scene.roll }} </p>
@@ -27,13 +33,21 @@ Encounter {{ encounter.title }}
     {% for message in scene.result.messages %}
       <p> {{ message }} </p>
     {% endfor %}
-    <ul>
+    <form action='/encounter/{{ encounter.id }}' method='post'>
+      <input type="hidden" name="proceed" value='{{ True }}'>
+      <input type="submit" value='Okay'>
+    </form>
+    <!-- <ul>
       <li><a onclick='choice({{ encounter.id }},{ proceed: true })'> Okay </a></li>
-    </ul>
+    </ul> -->
   {% else %}
-    <ul>
+    <!-- <ul>
       <li><a onclick='choice({{ encounter.id }},{ roll: true })'> Roll </a></li>
-    </ul>
+    </ul> -->
+    <form action='/encounter/{{ encounter.id }}' method='post'>
+      <input type="hidden" name="roll" value='{{ True }}'>
+      <input type="submit" value='Roll'>
+    </form>
   {% endif %}
 {% else %}
 <p> We should not be here yet...</p>
