@@ -18,5 +18,6 @@ def player():
         return json.jsonify(
             name=player.name,
             description=player.description,
-            api_key=player.api_key
+            api_key=player.api_key,
+            agent_id=player.agents[0].id
             )
