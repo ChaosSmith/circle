@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Tag</title>
+	<meta charset="utf-8"/>
+</head>
+
+<body>
+	<script>
+
+function request(action, method, body){
+	const r={method};
+	if(body) r.body=JSON.stringify(body);
+	return fetch('http://10.88.111.181:8000/'+action, r);
+}
+
+function v(id){
+	return document.getElementById(id).value
+}
+
+function player_create(){
+	request('player_create', 'POST', { password: v('password') });
+}
+
+function player_move(){
+	request('player_move', 'POST', {
+		id: v('id'),
+		password: v('password'),
+		direction: v('direction'),
+	});
+}
+
+var canvas;
+var context;
+
+function get_colors(id){
+	const base=[
+		'rgb(255, 0, 0)',
+		'rgb(0, 255, 0)',
+		'rgb(0, 0, 255)',
+		'rgb(255, 0, 255)',
+		'rgb(255, 255, 0)',
+		'rgb(0, 255, 255)',
+		'rgb(255, 127, 0)',
+		'rgb(128, 0, 128)',
+	];
+	result=[];
+	while(id){
+		result.push(base[id%8]);
+		id=Math.floor(id/8);
+	}
+	return result;
+}
+
+function render(){
+	request('agent', 'GET')
+		.then((r)=>{ return r.json(); })
+		.then((j)=>{
+			//background
+			context.fillStyle='rgb(255, 255, 255)';
+			context.fillRect(0, 0, 512, 512);
+			for(let i=0; i<100; ++i)
+				for(let j=0; j<100; ++j){
+					let color;
+					if((i+j)%2) color='rgb(255, 255, 255)';
+					else{
+						color='rgb(224, 224, 224)';
+						if((Math.floor(i/8)+Math.floor(j/8))%2) color='rgb(196, 196, 196)';
+					}
+					context.fillStyle=color;
+					context.fillRect(i*7, j*7, 7, 7);
+				}
+			//players
+			for(let i=0; i<j.agents.length; ++i){
+				const colors=get_colors(j.agents[i].id);
+				for(let k=0; k<colors.length; ++k){
+					context.fillStyle=colors[k];
+					const dx=7/colors.length;
+					context.fillRect(
+						j.agents[i].x*7+dx*k,
+						j.agents[i].y*7,
+						dx,
+						7
+					);
+				}
+			}
+			//again
+			setTimeout(render, 500);
+		});
+}
+
+function main(){
+	canvas=document.getElementById('canvas');
+	context=canvas.getContext('2d');
+	render();
+}
+
+window.onload=main;
+
+	</script>
+	<canvas id='canvas' width=1024 height=1024></canvas>
+	<div>
+		password<input type='text' id='password'/>
+		<button onclick='player_create()'>create</button>
+	</div>
+	<div>
+		id<input type='text' id='id'/>
+		direction<input type='text' id='direction'/>
+		<button onclick='player_move()'>move</button>
+	</div>
+</body>
+
+</html>
